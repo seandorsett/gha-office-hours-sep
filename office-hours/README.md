@@ -2,11 +2,12 @@
 
 ## Session plan
 
-- 40 minutes: product updates and two short demonstrations
+- 40 minutes: product updates and three short demonstrations
 - 5 minutes: GitHub Actions performance tips
 - 15 minutes: Q&A
 
-The presentation-ready deck with formatted presenter notes is
+The 18-slide presentation-ready deck with formatted presenter notes and
+clickable feature references is
 `GitHub-Actions-Office-Hours-Aug-Sep-2026.pptx`.
 
 ## Demo 1: reusable workflow identity
@@ -33,11 +34,22 @@ The presentation-ready deck with formatted presenter notes is
 
 **Prerequisite:** Dependabot alerts must be enabled for the repository. An empty result is still a successful demonstration. If organization policy blocks access, use the YAML as a code walkthrough and explain the policy boundary.
 
+## Demo 3: Code Quality attribution
+
+1. In `.github/workflows/office-hours-demo.yml`, highlight the `actions: read` permission on the `code-quality-attribution` job.
+2. Open the job summary and compare the two actors and expected dynamic workflow paths:
+   - Code Quality: `github-code-quality` and `dynamic/github-code-quality/codeql`
+   - Code scanning: `github-advanced-security` and `dynamic/github-code-scanning/codeql`
+3. Point out that usage reports, dashboards, and API consumers can now distinguish quality analysis from security scanning.
+
+**Prerequisite:** GitHub Code Quality must be enabled and have completed a run to show an observed Code Quality path. A zero count demonstrates the query and expected attribution; keep a screenshot or successful run from an enabled repository as a fallback.
+
 ## Pre-session checklist
 
 - Run the workflow once before the session.
 - Keep the successful run open in a browser tab as a fallback.
 - Confirm Dependabot alerts are enabled for the repository.
+- Confirm GitHub Code Quality has a completed run, or prepare a fallback screenshot.
 - Open both workflow files in adjacent editor tabs.
 - Set browser and editor zoom to at least 125%.
 - Download a local copy of the deck.

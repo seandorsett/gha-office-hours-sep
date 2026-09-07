@@ -72,6 +72,14 @@ def rich_text(slide, runs, x, y, w, h, size=20, align=PP_ALIGN.LEFT):
     return box
 
 
+def link_text(slide, label, url, x, y, w, h, size=11):
+    box = text(slide, label, x, y, w, h, size=size, color=BLUE, font=MONO)
+    run = box.text_frame.paragraphs[0].runs[0]
+    run.hyperlink.address = url
+    run.font.underline = True
+    return box
+
+
 def bullet_list(slide, items, x, y, w, h, size=22, color=WHITE, gap=10):
     box = slide.shapes.add_textbox(Inches(x), Inches(y), Inches(w), Inches(h))
     frame = box.text_frame
@@ -203,7 +211,7 @@ def build():
     text(s, "GitHub Actions", 0.75, 1.35, 11.5, 0.9, size=44, bold=True)
     text(s, "What changed in August + September 2026", 0.75, 2.22, 11.5, 0.65,
          size=28, color=BLUE, bold=True)
-    text(s, "Six updates · two live demos · five performance moves", 0.78, 3.25,
+    text(s, "Six updates · three live demos · five performance moves", 0.78, 3.25,
          9.5, 0.45, size=18, color=MUTED)
     rect(s, 0.78, 4.05, 11.7, 1.35, PANEL, radius=True, line=PANEL_2)
     text(s, "45 min", 1.1, 4.42, 1.6, 0.45, size=26, color=GREEN, bold=True)
@@ -211,7 +219,7 @@ def build():
     text(s, "15 min", 6.55, 4.42, 1.6, 0.45, size=26, color=PURPLE, bold=True)
     text(s, "Q&A", 8.0, 4.48, 2.0, 0.35, size=16)
     text(s, "September 2026", 0.78, 6.75, 3, 0.3, size=12, color=MUTED)
-    add_notes(s, "1 minute", "This session covers six GitHub Actions updates from August and early September 2026, two practical demonstrations, and five workflow performance techniques.", "Welcome everyone. Set the promise: practical changes, two small demos, and actions attendees can take this week. The Q&A clock starts after the 45-minute presentation.")
+    add_notes(s, "1 minute", "This session covers six GitHub Actions updates from August and early September 2026, three practical demonstrations, and five workflow performance techniques.", "Welcome everyone. Set the promise: practical changes, three small demos, and actions attendees can take this week. The Q&A clock starts after the 45-minute presentation.")
 
     # 2
     s = new_slide(prs)
@@ -220,7 +228,7 @@ def build():
         ("00–05", "Why these updates matter", "The operating themes"),
         ("05–17", "August releases", "Runners, retention, reporting"),
         ("17–29", "September releases", "API, permissions, identity"),
-        ("29–40", "Two demos", "Small YAML, visible result"),
+        ("29–40", "Three demos", "Small YAML, visible result"),
         ("40–45", "Performance tips", "Five high-leverage moves"),
         ("45–60", "Q&A", "Your workflows and constraints"),
     ]
@@ -258,7 +266,7 @@ def build():
         text(s, head, 3.25, y - 0.02, 4.8, 0.42, size=21, bold=True)
         text(s, body, 3.25, y + 0.47, 7.7, 0.35, size=15, color=MUTED)
     footer(s)
-    add_notes(s, "3 minutes", "August introduced a new Windows Arm64 runner image, distinct reporting identity for Code Quality, and a broader Actions retention policy.", "Preview the three August announcements. Emphasize that two require review of existing assumptions: VS 2022 dependencies and long-lived run history.")
+    add_notes(s, "2 minutes", "August introduced a new Windows Arm64 runner image, distinct reporting identity for Code Quality, and a broader Actions retention policy.", "Preview the three August announcements. Emphasize that two require review of existing assumptions: VS 2022 dependencies and long-lived run history.")
 
     # 5
     s = new_slide(prs)
@@ -294,7 +302,7 @@ def build():
     text(s, "Public repositories: 90-day maximum · Deleted history is not restored by later increases", 1.2, 6.15, 10.9, 0.4,
          size=15, color=MUTED, align=PP_ALIGN.CENTER)
     footer(s)
-    add_notes(s, "4 minutes", "Starting October 1, 2026, one Actions retention setting controls checks, workflow runs, statuses, artifacts, and logs; the default is 90 days.", "Previously, checks, runs, and statuses could remain for 400+ days regardless of artifact/log retention. Starting October 1, the same setting governs all five. Ask: does anyone rely on old run URLs for audits, support, or release evidence? Export what must outlive the configured window. Metadata is not billed, but artifacts and logs are.")
+    add_notes(s, "3 minutes", "Starting October 1, 2026, one Actions retention setting controls checks, workflow runs, statuses, artifacts, and logs; the default is 90 days.", "Previously, checks, runs, and statuses could remain for 400+ days regardless of artifact/log retention. Starting October 1, the same setting governs all five. Ask: does anyone rely on old run URLs for audits, support, or release evidence? Export what must outlive the configured window. Metadata is not billed, but artifacts and logs are.")
 
     # 7
     s = new_slide(prs)
@@ -357,7 +365,7 @@ def build():
     rich_text(s, [("Pattern: ", BLUE, True, SANS), ("workflow defaults + job-level elevation", WHITE, False, SANS)],
               1.2, 6.02, 10.8, 0.35, size=19, align=PP_ALIGN.CENTER)
     footer(s)
-    add_notes(s, "4 minutes", "The new vulnerability-alerts permission gives GITHUB_TOKEN read-only access to Dependabot alerts without requiring a personal access token or broader security scope.", "Show the permission name and emphasize job-level scoping. A good pattern is contents: read at workflow level, then grant vulnerability-alerts: read only to the reporting job. This is simpler to audit than a PAT and limits blast radius.")
+    add_notes(s, "3 minutes", "The new vulnerability-alerts permission gives GITHUB_TOKEN read-only access to Dependabot alerts without requiring a personal access token or broader security scope.", "Show the permission name and emphasize job-level scoping. A good pattern is contents: read at workflow level, then grant vulnerability-alerts: read only to the reporting job. This is simpler to audit than a PAT and limits blast radius.")
 
     # 11
     s = new_slide(prs)
@@ -386,22 +394,24 @@ def build():
 
     # 12
     s = new_slide(prs)
-    title(s, "Demo setup: one dispatch, two visible results", "Live demo", 12)
+    title(s, "Demo setup: one dispatch, three visible results", "Live demo", 12)
     text(s, "Office hours demo", 0.9, 2.0, 3.1, 0.42, size=22, bold=True)
     rect(s, 1.1, 2.75, 3.1, 1.0, PANEL, radius=True, line=BLUE)
     text(s, "workflow_dispatch", 1.1, 3.07, 3.1, 0.3, size=17, color=BLUE, bold=True, font=MONO, align=PP_ALIGN.CENTER)
     text(s, "→", 4.45, 2.96, 0.7, 0.45, size=30, color=PURPLE, bold=True, align=PP_ALIGN.CENTER)
-    rect(s, 5.35, 2.25, 3.0, 1.25, PANEL, radius=True, line=GREEN)
-    text(s, "Reusable identity", 5.35, 2.66, 3.0, 0.3, size=17, bold=True, align=PP_ALIGN.CENTER)
-    rect(s, 5.35, 4.05, 3.0, 1.25, PANEL, radius=True, line=PURPLE)
-    text(s, "Alert count", 5.35, 4.46, 3.0, 0.3, size=17, bold=True, align=PP_ALIGN.CENTER)
+    rect(s, 5.35, 1.95, 3.0, 1.05, PANEL, radius=True, line=GREEN)
+    text(s, "Reusable identity", 5.35, 2.31, 3.0, 0.3, size=16, bold=True, align=PP_ALIGN.CENTER)
+    rect(s, 5.35, 3.35, 3.0, 1.05, PANEL, radius=True, line=PURPLE)
+    text(s, "Alert count", 5.35, 3.71, 3.0, 0.3, size=16, bold=True, align=PP_ALIGN.CENTER)
+    rect(s, 5.35, 4.75, 3.0, 1.05, PANEL, radius=True, line=BLUE)
+    text(s, "CodeQL attribution", 5.35, 5.11, 3.0, 0.3, size=16, bold=True, align=PP_ALIGN.CENTER)
     text(s, "→", 8.65, 2.96, 0.7, 0.45, size=30, color=PURPLE, bold=True, align=PP_ALIGN.CENTER)
     rect(s, 9.55, 2.75, 2.8, 1.0, PANEL_2, radius=True)
     text(s, "Job summaries", 9.55, 3.07, 2.8, 0.3, size=17, bold=True, align=PP_ALIGN.CENTER)
     text(s, "Fallback: keep one successful run open before the session.", 1.5, 6.08, 10.3, 0.4,
          size=17, color=ORANGE, bold=True, align=PP_ALIGN.CENTER)
     footer(s)
-    add_notes(s, "1 minute", "A single manually dispatched workflow runs two independent jobs to demonstrate reusable-workflow provenance and least-privilege Dependabot access.", "Switch to the repository. Show the two small files first, then dispatch the workflow. While it starts, explain that the two jobs are independent. Keep a pre-run result open in case of queue delays.")
+    add_notes(s, "1 minute", "A single manually dispatched workflow runs three independent jobs to demonstrate reusable-workflow provenance, least-privilege Dependabot access, and separate CodeQL workload attribution.", "Switch to the repository. Show the two small files first, then dispatch the workflow. While it starts, explain that the three jobs are independent. Keep a pre-run result open in case of queue delays.")
 
     # 13
     s = new_slide(prs)
@@ -432,7 +442,25 @@ def build():
 
     # 15
     s = new_slide(prs)
-    title(s, "Five performance moves with outsized returns", "Final five minutes", 15)
+    title(s, "Demo 3: separate CodeQL workload attribution", "Live demo · 3 minutes", 15)
+    code_box(s, 'gh api "repos/$GITHUB_REPOSITORY/\n  actions/runs?actor=github-code-quality"', 0.85, 2.0, 5.4, 1.35, 16)
+    code_box(s, 'gh api "repos/$GITHUB_REPOSITORY/\n  actions/runs?actor=github-advanced-security"', 6.65, 2.0, 5.8, 1.35, 16)
+    rect(s, 0.85, 3.75, 5.4, 1.5, PANEL, radius=True, line=BLUE)
+    text(s, "Code Quality", 1.12, 4.02, 2.0, 0.3, size=18, color=BLUE, bold=True)
+    text(s, "actor: github-code-quality", 1.12, 4.43, 4.5, 0.27, size=14, font=MONO)
+    text(s, "path: dynamic/github-code-quality/codeql", 1.12, 4.79, 4.8, 0.27, size=13, font=MONO)
+    rect(s, 6.65, 3.75, 5.8, 1.5, PANEL, radius=True, line=PURPLE)
+    text(s, "Code scanning", 6.92, 4.02, 2.0, 0.3, size=18, color=PURPLE, bold=True)
+    text(s, "actor: github-advanced-security", 6.92, 4.43, 4.8, 0.27, size=14, font=MONO)
+    text(s, "path: dynamic/github-code-scanning/codeql", 6.92, 4.79, 5.0, 0.27, size=13, font=MONO)
+    text(s, "Land the point: quality and security are now independently reportable.", 1.1, 6.05, 11.1, 0.4,
+         size=19, color=GREEN, bold=True, align=PP_ALIGN.CENTER)
+    footer(s)
+    add_notes(s, "3 minutes", "GitHub Code Quality runs now have a distinct actor and dynamic workflow path, allowing Actions reports and API consumers to separate quality analysis from code scanning.", "Open the code-quality-attribution job summary. Compare the actor, expected path, run count, and latest observed path in each row. Explain that zero Code Quality runs means the feature is not enabled or has not completed a run in this repository. Use a prepared screenshot if needed. Close by showing which dashboard or billing filters must be updated.")
+
+    # 16
+    s = new_slide(prs)
+    title(s, "Five performance moves with outsized returns", "Final five minutes", 16)
     tips = [
         ("1", "Cancel stale work", "Use concurrency groups with cancel-in-progress for PRs.", BLUE),
         ("2", "Cache with intent", "Key on lockfiles; restore broadly; measure hit rate.", PURPLE),
@@ -452,9 +480,9 @@ def build():
     footer(s)
     add_notes(s, "5 minutes", "The highest-leverage performance improvements eliminate stale runs, reuse expensive deterministic work, prevent unnecessary jobs, control matrix growth, and distinguish queue time from execution time.", "Spend about 45 seconds on each tip. Concurrency avoids paying for obsolete commits. Cache only expensive deterministic inputs. Filters prevent runner allocation entirely. Matrices often grow quadratically. Finally, inspect queue time separately: a faster build cannot fix runner scarcity.")
 
-    # 16
+    # 17
     s = new_slide(prs)
-    title(s, "Three actions for next week", "Close", 16)
+    title(s, "Three actions for next week", "Close", 17)
     card(s, 0.8, 2.0, 3.75, 3.4, "Test", "Arm64 + VS 2026", "Run architecture-specific builds on the explicit image before automatic migration.", GREEN)
     card(s, 4.8, 2.0, 3.75, 3.4, "Review", "Retention + reports", "Confirm the retention window and update Code Quality path or actor filters.", ORANGE)
     card(s, 8.8, 2.0, 3.75, 3.4, "Adopt", "Identity + permission", "Use native reusable-workflow provenance and job-scoped alert access.", BLUE)
@@ -463,6 +491,45 @@ def build():
          size=13, color=MUTED, font=MONO, align=PP_ALIGN.CENTER)
     footer(s)
     add_notes(s, "3 minutes, then 15 minutes Q&A", "The immediate next steps are to test the new Arm64 image, review retention and reporting dependencies, and adopt narrower permissions plus native workflow provenance.", "Recap the three action categories. Transition to questions. Useful prompts: Which runner fleet is hardest to maintain? Where do shared workflows lack provenance? What is the longest feedback-time bottleneck today?")
+
+    # 18
+    s = new_slide(prs)
+    title(s, "Feature references", "GitHub changelog", 18)
+    references = [
+        (
+            "Windows 11 Arm64 with Visual Studio 2026",
+            "https://github.blog/changelog/2026-08-20-windows-11-arm64-vs2026-image-generally-available",
+        ),
+        (
+            "Separate GitHub Actions path for GitHub Code Quality",
+            "https://github.blog/changelog/2026-08-20-separate-github-actions-path-for-github-code-quality",
+        ),
+        (
+            "Actions retention for checks, workflow runs, and statuses",
+            "https://github.blog/changelog/2026-08-27-actions-retention-will-cover-checks-workflow-runs-and-statuses",
+        ),
+        (
+            "REST API for runner version deprecations",
+            "https://github.blog/changelog/2026-09-03-github-actions-early-september-2026-updates",
+        ),
+        (
+            "vulnerability-alerts permission for GITHUB_TOKEN",
+            "https://github.blog/changelog/2026-09-03-github-actions-early-september-2026-updates",
+        ),
+        (
+            "Reusable workflow job context properties",
+            "https://github.blog/changelog/2026-09-03-github-actions-early-september-2026-updates",
+        ),
+    ]
+    for i, (feature, url) in enumerate(references):
+        y = 1.82 + i * 0.82
+        rect(s, 0.8, y, 11.75, 0.67, PANEL, radius=True, line=PANEL_2)
+        text(s, feature, 1.05, y + 0.1, 4.6, 0.25, size=14, bold=True)
+        link_text(s, url, url, 5.55, y + 0.09, 6.65, 0.38, size=9)
+    text(s, "Links are clickable in Slide Show and Normal view.", 0.85, 6.82, 11.6, 0.25,
+         size=11, color=MUTED, align=PP_ALIGN.CENTER)
+    footer(s)
+    add_notes(s, "Reference slide; no presentation time required", "This slide provides the official GitHub Changelog source for every feature covered in the presentation.", "Leave this slide displayed after Q&A or share it with attendees as a follow-up resource. Each URL is clickable.")
 
     prs.save(OUT)
     print(f"Wrote {OUT} ({len(prs.slides)} slides)")
