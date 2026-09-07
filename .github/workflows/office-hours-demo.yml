@@ -22,9 +22,8 @@ jobs:
         run: |
           count="$(gh api \
             --paginate \
-            --slurp \
             "repos/$GITHUB_REPOSITORY/dependabot/alerts?state=open&per_page=100" \
-            --jq '[.[][]] | length')"
+            | jq -s '[.[] | .[]] | length')"
           echo "Open Dependabot alerts: $count" >> "$GITHUB_STEP_SUMMARY"
 
   code-quality-attribution:
