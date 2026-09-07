@@ -27,3 +27,31 @@ jobs:
             --jq '[.[][]] | length')"
           echo "Open Dependabot alerts: $count" >> "$GITHUB_STEP_SUMMARY"
 
+  code-quality-attribution:
+    permissions:
+      actions: read
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compare Code Quality and code scanning attribution
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "### CodeQL Actions attribution"
+            echo "| Workload | Actor | Expected dynamic path | Runs found | Latest observed path |"
+            echo "|---|---|---|---:|---|"
+            for entry in \
+              "Code Quality|github-code-quality|dynamic/github-code-quality/codeql" \
+              "Code scanning|github-advanced-security|dynamic/github-code-scanning/codeql"
+            do
+              IFS='|' read -r workload actor expected_path <<< "$entry"
+              response="$(gh api \
+                "repos/$GITHUB_REPOSITORY/actions/runs?actor=$actor&per_page=1")"
+              count="$(jq -r '.total_count' <<< "$response")"
+              observed_path="$(jq -r \
+                '.workflow_runs[0].path // "No matching run in this repository"' \
+                <<< "$response")"
+              echo "| $workload | \`$actor\` | \`$expected_path\` | $count | \`$observed_path\` |"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
