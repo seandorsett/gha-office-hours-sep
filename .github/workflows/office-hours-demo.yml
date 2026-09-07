@@ -1,0 +1,29 @@
+name: Office hours demo
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reusable-identity:
+    uses: ./.github/workflows/reusable-source.yml
+
+  dependabot-alerts:
+    permissions:
+      contents: read
+      vulnerability-alerts: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Read Dependabot alerts with least privilege
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          count="$(gh api \
+            --paginate \
+            --slurp \
+            "repos/$GITHUB_REPOSITORY/dependabot/alerts?state=open&per_page=100" \
+            --jq '[.[][]] | length')"
+          echo "Open Dependabot alerts: $count" >> "$GITHUB_STEP_SUMMARY"
+
