@@ -1,0 +1,22 @@
+name: Reusable source identity
+
+on:
+  workflow_call:
+
+jobs:
+  identify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show caller and reusable workflow identity
+        run: |
+          {
+            echo "### Reusable workflow identity"
+            echo "| Context | Value |"
+            echo "|---|---|"
+            echo '| `github.workflow_ref` | `${{ github.workflow_ref }}` |'
+            echo '| `job.workflow_ref` | `${{ job.workflow_ref }}` |'
+            echo '| `job.workflow_sha` | `${{ job.workflow_sha }}` |'
+            echo '| `job.workflow_repository` | `${{ job.workflow_repository }}` |'
+            echo '| `job.workflow_file_path` | `${{ job.workflow_file_path }}` |'
+          } >> "$GITHUB_STEP_SUMMARY"
+
